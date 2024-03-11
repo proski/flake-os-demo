@@ -1,2 +1,4 @@
 # flake-os-demo
-Conversion from flake-utils to flake-parts
+
+The code in this repository illustrates how to convert a flake that uses
+nixosConfigurations from flake-utils to flake-parts.
