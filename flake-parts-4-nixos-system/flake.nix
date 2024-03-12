@@ -15,8 +15,11 @@
             fsType = "ext4";
           };
           boot.loader.grub.enable = false;
-          # boot.kernel.enable = false;
           system.stateVersion = "23.11";
+          # Following causes infinite recursion:
+          # nixpkgs.buildPlatform = pkgs.stdenv.buildPlatform.system;
+          nixpkgs.buildPlatform = "x86_64-linux";
+          nixpkgs.hostPlatform = "aarch64-linux";
         };
         nixosConfigurations.devkit = inputs.nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";

@@ -3,20 +3,16 @@
 Another way to define a NixOS system is with `lib.nixosSystem` that doesn't
 need to know the build system.
 
-However, I get a build error when cross-compiling.
+It turns out both `nixpkgs.buildPlatform` and `nixpkgs.hostPlatform` need to be
+set for cross-compilation to work.
 
-```
-error: a 'aarch64-linux' with features {} is required to build
-'/nix/store/f2ljg5xnkrx9ap1sz6gbc7fykg4cw12w-append-initrd-secrets.drv', but I
-am a 'x86_64-linux' with features {benchmark, big-parallel, kvm, nixos-test,
-uid-range}
-```
+`nixpkgs.hostPlatform` is fixed, it's the hardware we are targeting. But
+`nixpkgs.buildPlatform` is what we want to be variable. One would think it can
+be copied from `pkgs.stdenv.buildPlatform.system`, but it's causing infinite
+recursion.
 
-Setting `boot.kernel.enable = false;` gets me past that point, but then I get
+It means that the build platform needs to be hardcoded unless we find some way
+to smuggle `system` from `perSystem` into the module.
 
-```
-error: a 'aarch64-linux' with features {} is required to build
-'/nix/store/vfnbkn6p0kgx9n1lzjxlcm9iag94sb46-mounts.sh.drv', but I am a
-'x86_64-linux' with features {benchmark, big-parallel, kvm, nixos-test,
-uid-range}
-```
+Hardcoding the build platform makes this approach just as problematic as our
+first attempt to convert from flake-utils to flake-parts.
