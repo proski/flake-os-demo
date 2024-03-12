@@ -18,6 +18,8 @@
           system.stateVersion = "23.11";
           # Following causes infinite recursion:
           # nixpkgs.buildPlatform = pkgs.stdenv.buildPlatform.system;
+          # And this is impure:
+          # nixpkgs.buildPlatform = builtins.currentSystem;
           nixpkgs.buildPlatform = "x86_64-linux";
           nixpkgs.hostPlatform = "aarch64-linux";
         };
