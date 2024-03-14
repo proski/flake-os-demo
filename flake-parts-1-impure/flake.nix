@@ -1,7 +1,9 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/057f9aecfb71c4437d2b27d3323df7f93c010b7e";
-    flake-parts.url = "github:hercules-ci/flake-parts/f7b3c975cf067e56e7cda6cb098ebe3fb4d74ca2";
+    nixpkgs.url =
+      "github:nixos/nixpkgs/057f9aecfb71c4437d2b27d3323df7f93c010b7e";
+    flake-parts.url =
+      "github:hercules-ci/flake-parts/f7b3c975cf067e56e7cda6cb098ebe3fb4d74ca2";
   };
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
@@ -11,9 +13,8 @@
           cross-config = modules:
             let
               pkgs = import inputs.nixpkgs {
-                # Cannot get `system` here. Uncomment the line below if you
-                # only ever build on x86_64-linux.
-                # system = "x86_64-linux";
+                # Use `--impure` on systems other than x86_64-linux.
+                system = builtins.currentSystem or "x86_64-linux";
               };
             in
             pkgs.pkgsCross.aarch64-multiplatform.nixos { imports = modules; };
@@ -31,7 +32,8 @@
         };
       perSystem = { system, ... }: {
         packages = {
-          default = inputs.self.nixosConfigurations.devkit.config.system.build.toplevel;
+          default =
+            inputs.self.nixosConfigurations.devkit.config.system.build.toplevel;
         };
       };
     };

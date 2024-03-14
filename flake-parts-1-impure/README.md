@@ -8,8 +8,8 @@ to use `nix build --impure` to build.
 
 Moreover, `nix flake show` and `nix flake check` need `--impure` too.
 
-Good luck justifying that "improvement"!
+You can hardcode one system as a fallback, but users of other systems still
+need `--impure`.
 
-And if you hardcode e.g. `system = "x86_64-linux"` that's not an improvement
-either. Your Mac with Apple Silicon won't be able to build this flake, even if
-you install Linux on it (in a VM or natively).
+Your best bet is to designate of system as "official" and others are
+"unofficial". That may work for some teams but not for others.

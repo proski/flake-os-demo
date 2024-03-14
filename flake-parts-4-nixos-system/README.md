@@ -11,8 +11,16 @@ set for cross-compilation to work.
 be copied from `pkgs.stdenv.buildPlatform.system`, but it's causing infinite
 recursion.
 
-It means that the build platform needs to be hardcoded unless we find some way
-to smuggle `system` from `perSystem` into the module.
+Indeed, we are not passing any system-dependent arguments to the configuration
+in `perSystem`, so `pkgs` as the `nixosModules` argument can only come from the
+`nixosConfiguration`. Defining one based from another won't get us any
+information about the current system.
 
-Hardcoding the build platform makes this approach just as problematic as our
-first attempt to convert from flake-utils to flake-parts.
+It means that the build platform needs to be hardcoded unless we find some way
+to break hermeticity of `nixosConfiguration`.
+
+So we are back to what we had during our first attempt. One system can be
+hardcoded, others need to use `--impure`.
+
+But one thing is better now. The build system is defined in a module. The same
+module can be used for many configurations.
